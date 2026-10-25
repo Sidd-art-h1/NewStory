@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewStory | Current Affairs Voice Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Ambient Glassmorphism Orbs -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+  <div class="bg-glow bg-glow-4"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">🎙️</div>
+        <div>
+          <h1 class="brand-title">NEW<span>STORY</span></h1>
+          <p class="brand-subtitle">Current Affairs Voice Agent • The Whole Plot Behind It</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="tech-badge"><span class="pulse-dot"></span> Sarvam 105B LLM</span>
+        <span class="tech-badge">Bulbul Voice v3</span>
+        <span class="tech-badge">Saaras STT</span>
+        <span class="tech-badge highlight">Kivi Compatible</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-layout">
+    
+    <!-- Left Column: Input Studio -->
+    <section class="studio-card input-studio">
+      <div class="card-header">
+        <div class="step-num">1</div>
+        <div>
+          <h2>Ingest News or Forum Discussion</h2>
+          <p class="section-desc">Feed raw news, a URL, forum chatter, or speak directly.</p>
+        </div>
+      </div>
+
+      <!-- Input Tabs -->
+      <div class="input-tabs">
+        <button class="tab-btn active" data-tab="presets">⚡ Presets</button>
+        <button class="tab-btn" data-tab="text">📝 Paste Text</button>
+        <button class="tab-btn" data-tab="image">📷 Photo / Scan</button>
+        <button class="tab-btn" data-tab="url">🌐 News URL</button>
+        <button class="tab-btn" data-tab="voice">🎤 Voice Ingest</button>
+      </div>
+
+      <!-- Tab 1: Presets -->
+      <div class="tab-content active" id="tab-presets">
+        <label class="form-label">Select a high-stakes scenario:</label>
+        <div class="preset-grid" id="preset-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Paste Text -->
+      <div class="tab-content" id="tab-text">
+        <label for="raw-input-text" class="form-label">Paste article, editorial, Reddit thread, or bulletin:</label>
+        <textarea id="raw-input-text" rows="8" placeholder="Paste full article text or investigative thread here... (e.g. 'The central bank announced new liquidity guidelines today...')"></textarea>
+      </div>
+
+      <!-- Tab 2.5: Image OCR Intake -->
+      <div class="tab-content" id="tab-image">
+        <label class="form-label">Upload a photo, screenshot, or scan of a newspaper article:</label>
+        <div class="image-dropzone" id="image-dropzone">
+          <input type="file" id="image-file-input" accept="image/*" class="file-hidden">
+          <div class="dropzone-inner" id="dropzone-prompt">
+            <span class="upload-icon">📰</span>
+            <span class="dropzone-title">Click to browse or drop newspaper photo here</span>
+            <span class="dropzone-sub">Supports PNG, JPG, JPEG, WEBP clipping photos</span>
+          </div>
+          <div class="image-preview-container hidden" id="image-preview-container">
+            <img id="image-preview" src="" alt="Newspaper clipping preview">
+            <button id="btn-remove-image" class="btn-mini btn-danger">✕ Change Image</button>
+          </div>
+        </div>
+        <button id="btn-ocr-extract" class="btn btn-secondary btn-full mt-2" disabled>
+          ⚡ Extract Article via Sarvam Doc AI
+        </button>
+        <div id="ocr-status" class="status-msg"></div>
+      </div>
+
+      <!-- Tab 3: URL Extraction -->
+      <div class="tab-content" id="tab-url">
+        <label for="url-input" class="form-label">Article / Forum Webpage URL:</label>
+        <div class="url-input-group">
+          <input type="url" id="url-input" placeholder="https://www.reuters.com/... or https://thehindu.com/...">
+          <button id="btn-fetch-url" class="btn btn-secondary">Fetch & Clean</button>
+        </div>
+        <div id="url-status" class="status-msg"></div>
+      </div>
+
+      <!-- Tab 4: Voice Input -->
+      <div class="tab-content" id="tab-voice">
+        <div class="voice-ingest-box">
+          <button id="btn-mic-ingest" class="mic-record-btn">
+            <span class="mic-icon">🎙️</span>
+            <span class="mic-label">Hold to Speak</span>
+          </button>
+          <p class="voice-hint">Press to dictate news, summarize an event, or state your topic via Sarvam Saaras STT.</p>
+          <div id="voice-stt-preview" class="stt-preview-box empty">Transcription will appear here...</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Step 2: Persona & Voice Controls -->
+      <div class="card-header">
+        <div class="step-num">2</div>
+        <div>
+          <h2>Director Controls & Audio Persona</h2>
+          <p class="section-desc">Choose how the hidden drama unfolds.</p>
+        </div>
+      </div>
+
+      <!-- Story Modes -->
+      <label class="form-label">Story Narrative Style:</label>
+      <div class="mode-selector" id="mode-selector">
+        <!-- Dynamically populated or default fallback -->
+        <button class="mode-btn active" data-mode="noir">
+          <span class="mode-badge">🕵️ Noir Expose</span>
+          <span class="mode-name">Investigative Noir</span>
+          <span class="mode-hint">Hidden motives, backroom deals & cynical intrigue</span>
+        </button>
+        <button class="mode-btn" data-mode="podcast">
+          <span class="mode-badge">🎙️ Fast-Paced</span>
+          <span class="mode-name">The Inside Scoop</span>
+          <span class="mode-hint">Witty, urgent, breathless insider podcast</span>
+        </button>
+        <button class="mode-btn" data-mode="succession">
+          <span class="mode-badge">⚔️ Throne Drama</span>
+          <span class="mode-name">Succession Saga</span>
+          <span class="mode-hint">Corporate titans & sovereign clashes</span>
+        </button>
+        <button class="mode-btn" data-mode="hinglish">
+          <span class="mode-badge">🇮🇳 Masala Plot</span>
+          <span class="mode-name">Desi Masala (Hinglish)</span>
+          <span class="mode-hint">High-drama Bollywood style with suspense</span>
+        </button>
+        <button class="mode-btn" data-mode="eli5">
+          <span class="mode-badge">📜 Parable</span>
+          <span class="mode-name">The Grand Allegory</span>
+          <span class="mode-hint">Jargon-free folk tale of merchants & kings</span>
+        </button>
+      </div>
+
+      <!-- Voice & Language Config -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="speaker-select" class="form-label">Sarvam Voice Actor:</label>
+          <select id="speaker-select">
+            <option value="aditya" selected>Aditya (Cinematic / Clear)</option>
+            <option value="simran">Simran (Expressive Host)</option>
+            <option value="kabir">Kabir (Deep / Investigative)</option>
+            <option value="priya">Priya (Articulate / Newsroom)</option>
+            <option value="ratan">Ratan (Warm Documentary)</option>
+            <option value="shubh">Shubh (Punchy / Energetic)</option>
+            <option value="ritu">Ritu (Lively Storyteller)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="language-select" class="form-label">Target Language:</label>
+          <select id="language-select">
+            <option value="en-IN" selected>English (India)</option>
+            <option value="hi-IN">Hindi (हिंदी)</option>
+            <option value="bn-IN">Bengali (বাংলা)</option>
+            <option value="ta-IN">Tamil (தமிழ்)</option>
+            <option value="te-IN">Telugu (తెలుగు)</option>
+            <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+            <option value="mr-IN">Marathi (मराठी)</option>
+            <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="custom-twist" class="form-label">Director's Secret Twist (Optional):</label>
+        <input type="text" id="custom-twist" placeholder="e.g. 'Focus on who lost millions', 'Emphasize shadow banking connections'...">
+      </div>
+
+      <!-- Generate Button -->
+      <button id="btn-generate" class="btn btn-primary btn-sparkle">
+        <span class="btn-text">⚡ UNVEIL THE PLOT & GENERATE VOICE STORY</span>
+      </button>
+
+      <div id="loading-spinner" class="loading-container hidden">
+        <div class="spinner"></div>
+        <div class="loading-text">
+          <span id="loading-step-text">Sarvam 105B is dissecting covert agendas...</span>
+          <span class="loading-subtext">Generating cinematic narrative and Bulbul voice synthesis</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Story Theater & Voice Agent -->
+    <section class="theater-column">
+      
+      <!-- Centered Voice Narrator Console with Light-Toned Surrounding Ring -->
+      <div class="voice-narrator-glass-center" id="theater-card">
+        <div class="play-surround-circle">
+          <button id="btn-play-pause" class="glass-play-btn" disabled title="Play / Pause Story Narration">
+            <div class="play-pulse-ring"></div>
+            <span id="play-icon" class="play-symbol">▶</span>
+          </button>
+        </div>
+        <div class="narrator-info centered">
+          <div class="narrator-status">
+            <span class="status-indicator" id="status-indicator"></span>
+            <span id="voice-meta">Voice Narrator Standby</span>
+          </div>
+          <span class="narrator-sub" id="narrator-sub">Generate a story to start listening</span>
+        </div>
+      </div>
+
+      <!-- The Revealed Story Screenplay Card -->
+      <div class="studio-card story-card" id="story-display-card">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🎭</div>
+          <h3>The Stage is Quiet</h3>
+          <p>Select a scenario or paste news on the left, then click <strong>Unveil the Plot</strong> to hear the untold story behind the headlines.</p>
+        </div>
+
+        <!-- Rendered Story Content -->
+        <div class="story-content hidden" id="story-content">
+          <div class="story-top">
+            <div class="logline-badge" id="story-logline">"A single sentence premise hook"</div>
+            <h2 class="story-headline" id="story-headline">The Headline Sits Here</h2>
+          </div>
+
+          <!-- Secret Agenda Card -->
+          <div class="agenda-box">
+            <div class="agenda-title">🎯 The Covert Agenda (Behind the Curtain)</div>
+            <p id="story-agenda">Official releases emphasized partnership, but the true prize was leverage.</p>
+          </div>
+
+          <!-- Key Players -->
+          <div class="players-section">
+            <h4 class="section-title">👥 The Chessboard: Key Players & Stakes</h4>
+            <div class="players-grid" id="players-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Narrative Acts -->
+          <div class="acts-section">
+            <h4 class="section-title">📜 The Unfolding Saga</h4>
+            <div class="acts-list" id="acts-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Market, Business & Political Jargon Buster -->
+          <div class="jargon-section" id="jargon-section">
+            <div class="jargon-header">
+              <div>
+                <h4 class="section-title">💡 Market, Business & Political Jargon Buster</h4>
+                <p class="section-subtitle">Complex terms detected in this dispatch, translated into plain-English analogies with voice audio.</p>
+              </div>
+            </div>
+
+            <!-- Detected Terms Grid -->
+            <div class="terms-grid" id="terms-container">
+              <!-- Populated by JS -->
+            </div>
+
+            <!-- Custom Term Decoder Input -->
+            <div class="custom-decoder-box">
+              <span class="decoder-label">🔍 Decode Any Custom Concept:</span>
+              <div class="decoder-input-group">
+                <input type="text" id="custom-term-input" placeholder="e.g. 'Quantitative Easing', 'Short Squeeze', 'Gerrymandering', 'Lithography'...">
+                <button id="btn-decode-term" class="btn btn-secondary">⚡ Decode & Listen</button>
+              </div>
+              <div class="quick-terms">
+                <span class="quick-term-pill" data-term="Quantitative Easing">Quantitative Easing</span>
+                <span class="quick-term-pill" data-term="Margin Call">Margin Call</span>
+                <span class="quick-term-pill" data-term="Lithography Sanctions">Lithography Sanctions</span>
+                <span class="quick-term-pill" data-term="Interchange Fee">Interchange Fee</span>
+                <span class="quick-term-pill" data-term="Sovereign Debt Default">Sovereign Debt Default</span>
+              </div>
+              <div id="decoded-term-result" class="decoded-term-box hidden">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Spoken Voice Script Card -->
+          <div class="voice-script-box">
+            <div class="script-header">
+              <span>🎙️ Master Voice Script (Spoken by Sarvam Bulbul)</span>
+              <button id="btn-replay-script" class="btn-mini">🔊 Re-play Audio</button>
+            </div>
+            <p id="story-voice-script" class="script-text">The voice narration transcript...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Voice Agent Interrogation Console -->
+      <div class="studio-card qa-card hidden" id="qa-card">
+        <div class="card-header">
+          <div class="step-num">3</div>
+          <div>
+            <h2>Interrogate the Narrator</h2>
+            <p class="section-desc">Ask follow-up questions to uncover deeper details with spoken voice answers.</p>
+          </div>
+        </div>
+
+        <!-- Conversation Stream -->
+        <div class="chat-stream" id="chat-stream">
+          <div class="chat-msg system">
+            <span>Ask me anything about this story. Who profited? What are they hiding? What comes next?</span>
+          </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="chat-input-bar">
+          <button id="btn-mic-question" class="btn-mic-chat" title="Hold/Click to speak your question">
+            🎙️
+          </button>
+          <input type="text" id="chat-input" placeholder="Ask a question (e.g. 'Who funded this?' or 'What happens next?')...">
+          <button id="btn-send-question" class="btn btn-secondary">Send</button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>NewStory • Built with Sarvam AI 105B, Bulbul TTS & Saaras STT for Hackathon Demo</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
