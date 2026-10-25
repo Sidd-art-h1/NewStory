@@ -58,11 +58,31 @@ HOST=127.0.0.1
 python -m pip install -r requirements.txt
 ```
 
-### 3. Launch the Application
+### 3. Launch with Streamlit
+```bash
+streamlit run streamlit_app.py
+```
+Open **[http://localhost:8501](http://localhost:8501)** in your browser!
+
+### 4. Or Launch with FastAPI
 ```bash
 python run.py
 ```
 Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser!
+
+---
+
+## ☁️ Deploying to Streamlit Community Cloud
+
+1. Push your project to GitHub.
+2. Visit **[share.streamlit.io](https://share.streamlit.io)** and connect your GitHub repository.
+3. Set Main file path: `streamlit_app.py`.
+4. Under **Advanced Settings > Secrets**, paste your keys:
+```toml
+SARVAM_API_KEY = "sk_mk6n695l_..."
+KIVI_API_KEY = "sk_mk6n695l_..."
+```
+5. Click **Deploy!** Your app will be live globally with a shareable URL.
 
 ---
 
